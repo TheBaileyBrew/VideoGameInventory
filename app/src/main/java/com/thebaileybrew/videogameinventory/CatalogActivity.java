@@ -52,6 +52,7 @@ public class CatalogActivity extends AppCompatActivity implements View.OnClickLi
     }
 
     //Show and Hide the Secret FAB Menu
+    //TODO: Add a new layout that adds a washout fade over the RecyclerView
     private void showFABMenu() {
         isFabMenuOpen = true;
         fabAddLayout.setVisibility(View.VISIBLE);

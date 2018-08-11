@@ -36,8 +36,8 @@
         <android.support.design.widget.FloatingActionButton
             android:id="@+id/stats_fab"
             android:elevation="6dp"
-            android:layout_width="75dp"
-            android:layout_height="75dp"
+            android:layout_width="65dp"
+            android:layout_height="65dp"
             android:src="@drawable/ic_stats"/>
     </LinearLayout>
 
@@ -60,8 +60,8 @@
         <android.support.design.widget.FloatingActionButton
             android:id="@+id/inventory_add"
             android:elevation="6dp"
-            android:layout_width="75dp"
-            android:layout_height="75dp"
+            android:layout_width="65dp"
+            android:layout_height="65dp"
             android:src="@drawable/ic_add"/>
     </LinearLayout>
     <LinearLayout
@@ -83,8 +83,8 @@
             android:id="@+id/delete_all"
             android:elevation="6dp"
             app:borderWidth="0dp"
-            android:layout_width="75dp"
-            android:layout_height="75dp"
+            android:layout_width="65dp"
+            android:layout_height="65dp"
             android:src="@drawable/ic_delete_forever"/>
     </LinearLayout>
 
@@ -94,7 +94,7 @@
         android:layout_width="75dp"
         android:layout_height="75dp"
         android:layout_gravity="bottom|end"
-        android:layout_margin="45dp"
+        android:layout_margin="47dp"
         android:src="@drawable/ic_menu"/>
 
 </android.support.design.widget.CoordinatorLayout>
