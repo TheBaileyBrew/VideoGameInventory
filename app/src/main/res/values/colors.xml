@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="colorPrimary">#303030</color>
+    <color name="colorPrimaryDark">#000000</color>
+    <color name="colorAccent">#3765DB</color>
+    <color name="colorAccentRed">#db373c</color>
+
+    <color name="colorFade">#783765db</color>
+
+    <color name="gradient_start">#FFFFFF</color>
+    <color name="gradient_end">#22FFFFFF</color>
+    <color name="gradient_end_bottom">#22FFFFFF</color>
+
+    <color name="gradient_start_bottom_ps3">#3765DB</color>
+    <color name="gradient_start_bottom_ps4">#db6537</color>
+    <color name="gradient_start_bottom_xbone">#37dbc8</color>
+    <color name="gradient_start_bottom_3ds">#a437db</color>
+    <color name="gradient_start_bottom_switch">#45db37</color>
+</resources>

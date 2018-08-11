@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/recyclerView"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"/>
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+        <ImageView
+            android:id="@+id/background_image_empty_layout"
+            android:layout_width="155dp"
+            android:layout_height="155dp"
+            android:layout_centerInParent="true"/>
+
+    </RelativeLayout>
+
+    <LinearLayout
+        android:id="@+id/stats_layout"
+        android:layout_width="wrap_content"
+        android:layout_height="100dp"
+        android:visibility="gone"
+        android:gravity="center_vertical"
+        android:layout_gravity="bottom|end"
+        android:layout_margin="45dp">
+        <TextView
+            android:id="@+id/inventory_stats_text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginRight="6dp"
+            android:textSize="@dimen/small_text_20sp"
+            android:text="INVENTORY STATS"/>
+        <android.support.design.widget.FloatingActionButton
+            android:id="@+id/stats_fab"
+            android:elevation="6dp"
+            android:layout_width="75dp"
+            android:layout_height="75dp"
+            android:src="@drawable/ic_stats"/>
+    </LinearLayout>
+
+
+    <LinearLayout
+        android:id="@+id/add_layout"
+        android:layout_width="wrap_content"
+        android:layout_height="100dp"
+        android:visibility="gone"
+        android:gravity="center_vertical"
+        android:layout_gravity="bottom|end"
+        android:layout_margin="45dp">
+        <TextView
+            android:id="@+id/inventory_add_text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginRight="6dp"
+            android:textSize="@dimen/small_text_20sp"
+            android:text="ADD NEW INVENTORY"/>
+        <android.support.design.widget.FloatingActionButton
+            android:id="@+id/inventory_add"
+            android:elevation="6dp"
+            android:layout_width="75dp"
+            android:layout_height="75dp"
+            android:src="@drawable/ic_add"/>
+    </LinearLayout>
+    <LinearLayout
+        android:id="@+id/delete_all_layout"
+        android:layout_width="wrap_content"
+        android:layout_height="100dp"
+        android:visibility="gone"
+        android:gravity="center_vertical"
+        android:layout_gravity="bottom|end"
+        android:layout_margin="45dp">
+        <TextView
+            android:id="@+id/delete_all_text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginRight="6dp"
+            android:textSize="@dimen/small_text_20sp"
+            android:text="DELETE INVENTORY"/>
+        <android.support.design.widget.FloatingActionButton
+            android:id="@+id/delete_all"
+            android:elevation="6dp"
+            app:borderWidth="0dp"
+            android:layout_width="75dp"
+            android:layout_height="75dp"
+            android:src="@drawable/ic_delete_forever"/>
+    </LinearLayout>
+
+    <android.support.design.widget.FloatingActionButton
+        android:id="@+id/fab_menu"
+        android:elevation="3dp"
+        android:layout_width="75dp"
+        android:layout_height="75dp"
+        android:layout_gravity="bottom|end"
+        android:layout_margin="45dp"
+        android:src="@drawable/ic_menu"/>
+
+</android.support.design.widget.CoordinatorLayout>
