@@ -29,7 +29,7 @@ public class HomeLoadingActivity extends AppCompatActivity {
                 openGamingDatabase();
             }
         };
-        mHandler.postDelayed(delayRunnable, 20000);
+        mHandler.postDelayed(delayRunnable, 12000);
     }
 
     private void openGamingDatabase() {

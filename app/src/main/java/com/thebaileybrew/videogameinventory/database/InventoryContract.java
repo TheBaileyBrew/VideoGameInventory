@@ -9,7 +9,7 @@ public final class InventoryContract {
     private InventoryContract() {}
 
     //Constant Providers
-    public static final String CONTENT_AUTHORITY = "com.thebaileybrew.retailinventory";
+    public static final String CONTENT_AUTHORITY = "com.thebaileybrew.videogameinventory";
     private static final Uri BASE_CONTENT_URI = Uri.parse("content://" + CONTENT_AUTHORITY);
 
     //Path Providers

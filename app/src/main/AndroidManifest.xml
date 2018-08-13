@@ -18,6 +18,14 @@
         </activity>
         <activity android:name=".CatalogActivity"
             android:label="Catalog View"/>
+        <activity android:name=".AddActivity"
+            android:label="Update Inventory"
+            android:parentActivityName=".CatalogActivity">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".CatalogActivity"/>
+        </activity>
+
         <provider
             android:authorities="com.thebaileybrew.videogameinventory"
             android:name=".database.InventoryProvider"

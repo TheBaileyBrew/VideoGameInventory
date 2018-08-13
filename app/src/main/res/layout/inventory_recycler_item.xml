@@ -40,9 +40,9 @@
             app:layout_constraintLeft_toLeftOf="parent"
             android:layout_marginLeft="@dimen/small_margin_4dp"
             android:layout_marginTop="@dimen/small_margin_4dp"
-            android:layout_width="205dp"
+            android:layout_width="225dp"
             android:layout_height="wrap_content"
-            android:textSize="22sp"
+            android:textSize="26sp"
             android:textStyle="bold"
             android:maxLines="1"
             android:ellipsize="end"
@@ -79,7 +79,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textSize="@dimen/small_text_20sp"
-            android:text="SUGGESTED PRICE: "/>
+            android:text="SUGGESTED SALE PRICE: "/>
         <TextView
             android:id="@+id/item_price_view"
             app:layout_constraintTop_toBottomOf="@id/item_name_view"
@@ -96,7 +96,7 @@
             android:layout_marginTop="@dimen/small_margin_4dp"
             android:paddingTop="16dp"
             android:paddingBottom="@dimen/small_padding_8dp"
-            android:layout_width="275dp"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:background="@drawable/layer_list_ps3">
             <TextView

@@ -1,4 +1,17 @@
 <resources>
     <string name="app_name">Gaming Database</string>
     <string name="delete"><![CDATA[< DELETE]]></string>
+    <string name="action_delete">Delete Game</string>
+    <string name="action_save">Save Game</string>
+    <string name="editor_failed">Failed to add to DB</string>
+    <string name="editor_success">Successful add to DB</string>
+    <string name="action_delete_all_entries">Delete All Games</string>
+    <string name="action_view_stats">Inventory Stats</string>
+
+    <string name="condition_good">GOOD</string>
+    <string name="condition_great">GREAT</string>
+    <string name="condition_poor">POOR</string>
+    <string name="insert_dummy">Add Dummy Game</string>
+    <string name="delete_them">Delete Them!</string>
+    <string name="save_them">Save Them!</string>
 </resources>

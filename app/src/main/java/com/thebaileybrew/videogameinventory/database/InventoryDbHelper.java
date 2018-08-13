@@ -36,7 +36,7 @@ public class InventoryDbHelper extends SQLiteOpenHelper {
                 + InventoryEntry.GAME_QUANTITY + " INTEGER NOT NULL DEFAULT 0, "
                 + InventoryEntry.GAME_SALE_PRICE + " REAL, "
                 + InventoryEntry.GAME_SUGGESTED_PRICE + " REAL, "
-                + InventoryEntry.GAME_CONDITION + " INTEGER);";
+                + InventoryEntry.GAME_CONDITION + " TEXT);";
         db.execSQL(SQL_CREATE_INVENTORY_TABLE);
     }
     private void addGamesTable(SQLiteDatabase db) {

@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string-array name="array_system_types">
+        <item>@string/sps3</item>
+        <item>@string/sps4</item>
+        <item>@string/mxbox</item>
+        <item>@string/n3ds</item>
+        <item>@string/nswitch</item>
+    </string-array>
+    <string name="sps3">Sony Playstation 3</string>
+    <string name="sps4">Sony Playstation 4</string>
+    <string name="mxbox">Microsoft XBox One</string>
+    <string name="n3ds">Nintendo 3DS</string>
+    <string name="nswitch">Nintendo Switch</string>
+</resources>

@@ -33,7 +33,7 @@ public class InventoryCursorAdapter extends RecyclerView.Adapter<InventoryCursor
 
             @Override
             public void bindView(View view, Context context, Cursor cursor) {
-                ConstraintLayout itemRecyclerView = view.findViewById(R.id.view_foreground);
+                RelativeLayout itemRecyclerView = view.findViewById(R.id.view_object_contraint);
                 TextView systemDetail = view.findViewById(R.id.system_detail);
                 TextView itemDetail = view.findViewById(R.id.item_name_view);
                 TextView quantityDetail = view.findViewById(R.id.item_qty_view);
@@ -41,32 +41,32 @@ public class InventoryCursorAdapter extends RecyclerView.Adapter<InventoryCursor
                 int systemValue = cursor.getInt(cursor.getColumnIndexOrThrow("system"));
                 switch (systemValue) {
                     case 0:
-                        systemDetail.setText("PS3");
+                        systemDetail.setText("PLAYSTATION 3");
                         itemRecyclerView.setBackgroundResource(R.drawable.layer_list_ps3);
                         break;
                     case 1:
-                        systemDetail.setText("PS4");
+                        systemDetail.setText("PLAYSTATION 4");
                         itemRecyclerView.setBackgroundResource(R.drawable.layer_list_ps4);
                         break;
                     case 2:
-                        systemDetail.setText("XBOX1");
+                        systemDetail.setText("XBOX ONE");
                         itemRecyclerView.setBackgroundResource(R.drawable.layer_list_xbone);
                         break;
                     case 3:
-                        systemDetail.setText("3DS");
+                        systemDetail.setText("NINTENDO 3DS");
                         itemRecyclerView.setBackgroundResource(R.drawable.layer_list_3ds);
                         break;
                     case 4:
-                        systemDetail.setText("SWITCH");
+                        systemDetail.setText("NINTENDO SWITCH");
                         itemRecyclerView.setBackgroundResource(R.drawable.layer_list_switch);
                     default:
                         break;
                 }
-                String itemValue = cursor.getString((cursor.getColumnIndexOrThrow("product")));
+                String itemValue = cursor.getString((cursor.getColumnIndexOrThrow("game")));
                 itemDetail.setText(itemValue);
                 String quantityValue = cursor.getString((cursor.getColumnIndexOrThrow("quantity")));
                 quantityDetail.setText(quantityValue);
-                String priceValue = cursor.getString((cursor.getColumnIndexOrThrow("price")));
+                String priceValue = cursor.getString((cursor.getColumnIndexOrThrow("saleprice")));
                 priceDetail.setText(priceValue);
 
             }
