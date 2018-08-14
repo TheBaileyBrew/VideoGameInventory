@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="colorPrimary">#303030</color>
-    <color name="colorPrimaryDark">#000000</color>
+    <color name="colorPrimary">#1b1b1b</color>
+    <color name="colorPrimaryDark">#00237e</color>
     <color name="colorAccent">#3765DB</color>
     <color name="colorAccentRed">#db373c</color>
 
@@ -16,4 +16,8 @@
     <color name="gradient_start_bottom_xbone">#37dbc8</color>
     <color name="gradient_start_bottom_3ds">#a437db</color>
     <color name="gradient_start_bottom_switch">#45db37</color>
+
+    <color name="colorPrimaryDarkText">#1b1b1b</color>
+    <color name="colorPrimaryText">#505050</color>
+    <color name="colorPrimaryLightText">#7b7b7b</color>
 </resources>

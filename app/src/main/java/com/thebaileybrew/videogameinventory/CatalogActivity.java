@@ -6,9 +6,11 @@ import android.content.ContentValues;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
@@ -20,36 +22,40 @@ import android.support.v7.widget.helper.ItemTouchHelper;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.view.animation.LayoutAnimationController;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.thebaileybrew.videogameinventory.database.InventoryContract;
 import com.thebaileybrew.videogameinventory.database.InventoryCursorAdapter;
 import com.thebaileybrew.videogameinventory.onclickprotocols.onClickInterface;
-import com.thebaileybrew.videogameinventory.onclickprotocols.onTouchRecyclerItemHelper;
-import com.thebaileybrew.videogameinventory.onclickprotocols.onTouchRecyclerItemListener;
 
 import java.util.Random;
 
 public class CatalogActivity extends AppCompatActivity implements View.OnClickListener {
     private static final String TAG = CatalogActivity.class.getSimpleName();
 
-    Boolean isFabMenuOpen = false;
-    FloatingActionButton fabMenu;
-    FloatingActionButton fabAddInventory; LinearLayout fabAddLayout; TextView fabAddText;
-    FloatingActionButton fabDeleteInventory; LinearLayout fabDeleteLayout; TextView fabDeleteText;
-    FloatingActionButton fabViewStats; LinearLayout fabViewLayout; TextView fabViewText;
+    private Boolean isFabMenuOpen = false;
+    private FloatingActionButton fabMenu;
+    private FloatingActionButton fabAddInventory; private LinearLayout fabAddLayout; private TextView fabAddText;
+    private FloatingActionButton fabDeleteInventory; private LinearLayout fabDeleteLayout; private TextView fabDeleteText;
+    private FloatingActionButton fabViewStats; private LinearLayout fabViewLayout; private TextView fabViewText;
+    private boolean isFabViewed = false;
+    private Animation animationFadeOut, animationFadeIn;
 
-    CoordinatorLayout coordinatorLayout;
-    RecyclerView recyclerView;
-    InventoryCursorAdapter inventoryCursorAdapter;
-    Cursor cursor;
-    Cursor savingCursor;
+    private CoordinatorLayout coordinatorLayout;
+    private RelativeLayout fadingLayoutForFabs;
+    private RecyclerView recyclerView;
+    private InventoryCursorAdapter inventoryCursorAdapter;
+    private ItemTouchHelper.SimpleCallback itemTouchCallBack;
+    private Cursor cursor;
+    private boolean undoDelete = false;
 
-    int dummyData = 0;
+    private int dummyData = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -57,10 +63,9 @@ public class CatalogActivity extends AppCompatActivity implements View.OnClickLi
         setContentView(R.layout.activity_catalog);
         initFabs();
         coordinatorLayout = findViewById(R.id.coordinator_layout);
-
+        animationFadeOut = AnimationUtils.loadAnimation(this, R.anim.fadeout);
+        animationFadeIn = AnimationUtils.loadAnimation(this, R.anim.fadein);
     }
-
-
 
     @Override
     protected void onStart() {
@@ -69,7 +74,6 @@ public class CatalogActivity extends AppCompatActivity implements View.OnClickLi
     }
 
     private void displayDatabaseDetails() {
-
         String[] projection = {
                 InventoryContract.InventoryEntry._ID,
                 InventoryContract.InventoryEntry.GAME_NAME,
@@ -78,63 +82,60 @@ public class CatalogActivity extends AppCompatActivity implements View.OnClickLi
                 InventoryContract.InventoryEntry.GAME_SALE_PRICE,
                 InventoryContract.InventoryEntry.GAME_SUGGESTED_PRICE,
                 InventoryContract.InventoryEntry.GAME_CONDITION};
-
         cursor = getContentResolver().query(
                 InventoryContract.InventoryEntry.CONTENT_URI, projection,
                 null,null,null,null);
-
         recyclerView = findViewById(R.id.recyclerView);
 
         inventoryCursorAdapter = new InventoryCursorAdapter(this, cursor, new onClickInterface() {
+            //Defines what happens on item tap
             @Override
             public void onItemClick(View v, int position) {
-                Toast.makeText(CatalogActivity.this, "Item clicked for update "
-                        + String.valueOf(position), Toast.LENGTH_SHORT).show();
+                //TODO: Set up Update Content Provider
             }
 
+            //Defines what happens on long click
             @Override
             public void onLongClick(View v, int position) {
-                Snackbar mySnackBar = Snackbar.make(coordinatorLayout, "Do something..", Snackbar.LENGTH_LONG)
-                        .setAction("See Item Details...", new View.OnClickListener() {
-                            @Override
-                            public void onClick(View v) {
-                                //TODO: Call for Item Detail Intent
-                            }
-                        }).setActionTextColor(getResources().getColor(R.color.colorAccentRed));
-                mySnackBar.show();
+                //TODO: Set up Dialog.Builder to allow for view data, update record, or delete
             }
         });
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this);
+        linearLayoutManager.setStackFromEnd(true);
         recyclerView.setLayoutManager(linearLayoutManager);
         recyclerView.setAdapter(inventoryCursorAdapter);
-        ItemTouchHelper.SimpleCallback itemTouchCallBack = new onTouchRecyclerItemHelper(0,
-                ItemTouchHelper.LEFT, new onTouchRecyclerItemListener() {
-            @Override
-            public void onSwiped(RecyclerView.ViewHolder viewHolder, int direction, final int position) {
-                Snackbar verifyDeletion = Snackbar.make(coordinatorLayout, "Undo Deletion?", Snackbar.LENGTH_LONG)
-                    .setAction("Save That Game!", new View.OnClickListener() {
-                        @Override
-                        public void onClick(View v) {
-                            onSwipeDeleteConfirmSnackBar(position);
-                        }
-                    });
-                verifyDeletion.show();
-
-                Uri currentItemUri = ContentUris.withAppendedId(InventoryContract.InventoryEntry.CONTENT_URI, position);
-                getContentResolver().delete(currentItemUri, null, null);
-                inventoryCursorAdapter.notifyDataSetChanged();
-                displayDatabaseDetails();
-
-            }
-        });
-
-        new ItemTouchHelper(itemTouchCallBack).attachToRecyclerView(recyclerView);
         runLayoutAnimation(recyclerView);
+    }
+
+    private void setItemPendingDelete(RecyclerView.ViewHolder viewHolder, Uri currentUri) {
+        final Handler mHandler = new Handler();
+        Runnable waitForConfirm = new Runnable() {
+            @Override
+            public void run() {
+                Snackbar verifyDeletion = Snackbar.make(coordinatorLayout, "Undo Deletion?", Snackbar.LENGTH_LONG)
+                        .setAction("Save That Game!", new View.OnClickListener() {
+                            @Override
+                            public void onClick(View v) {
+                                undoDelete = true;
+                            }
+                        });
+                verifyDeletion.show();
+            }
+        };
+        mHandler.postDelayed(waitForConfirm, Snackbar.LENGTH_LONG);
+        if (!undoDelete) {
+            getContentResolver().delete(currentUri, null, null);
+            recyclerView.removeViewAt(viewHolder.getAdapterPosition());
+            inventoryCursorAdapter.notifyDataSetChanged();
+            displayDatabaseDetails();
+        } else {
+            undoDelete = false;
+        }
     }
 
     private void onSwipeDeleteConfirmSnackBar(int position) {
         Uri currentItemUri = ContentUris.withAppendedId(InventoryContract.InventoryEntry.CONTENT_URI, position);
-        
+
         inventoryCursorAdapter.notifyDataSetChanged();
         displayDatabaseDetails();
     }
@@ -162,6 +163,8 @@ public class CatalogActivity extends AppCompatActivity implements View.OnClickLi
         fabViewText = findViewById(R.id.inventory_stats_text);
         //Initialize  menu FAB
         fabMenu = findViewById(R.id.fab_menu);
+        //Initialize the fade view
+        fadingLayoutForFabs = findViewById(R.id.fade_layout);
 
         //Declare onClicks
         fabAddInventory.setOnClickListener(this);
@@ -174,15 +177,16 @@ public class CatalogActivity extends AppCompatActivity implements View.OnClickLi
     //TODO: Add a new layout that adds a washout fade over the RecyclerView
     private void showFABMenu() {
         isFabMenuOpen = true;
+
         fabAddLayout.setVisibility(View.VISIBLE);
         fabViewLayout.setVisibility(View.VISIBLE);
         fabDeleteLayout.setVisibility(View.VISIBLE);
 
         fabMenu.animate().rotationBy(90);
-        fabAddLayout.animate().translationY(-getResources().getDimension(R.dimen.standard_150));
-        fabDeleteLayout.animate().translationY(-getResources().getDimension(R.dimen.standard_75))
-                .translationX(-getResources().getDimension(R.dimen.standard_75));
-        fabViewLayout.animate().translationX(-getResources().getDimension(R.dimen.standard_150)).setListener(new Animator.AnimatorListener() {
+        fabAddLayout.animate().translationY(-getResources().getDimension(R.dimen.standard_140));
+        fabDeleteLayout.animate().translationY(-getResources().getDimension(R.dimen.standard_70))
+                .translationX(-getResources().getDimension(R.dimen.standard_35));
+        fabViewLayout.animate().translationX(-getResources().getDimension(R.dimen.standard_70)).setListener(new Animator.AnimatorListener() {
             @Override
             public void onAnimationStart(Animator animation) {
                 fabAddText.setVisibility(View.INVISIBLE);
@@ -192,9 +196,26 @@ public class CatalogActivity extends AppCompatActivity implements View.OnClickLi
 
             @Override
             public void onAnimationEnd(Animator animation) {
-                fabAddText.setVisibility(View.VISIBLE);
-                fabDeleteText.setVisibility(View.VISIBLE);
-                fabViewText.setVisibility(View.VISIBLE);
+                fadingLayoutForFabs.setVisibility(View.VISIBLE);
+                if (!isFabViewed) {
+                    fabAddText.setAnimation(animationFadeIn);
+                    fabViewText.setAnimation(animationFadeIn);
+                    fabDeleteText.setAnimation(animationFadeIn);
+                    fabAddText.setVisibility(View.VISIBLE);
+                    fabDeleteText.setVisibility(View.VISIBLE);
+                    fabViewText.setVisibility(View.VISIBLE);
+                    fabAddText.setAnimation(animationFadeOut);
+                    fabViewText.setAnimation(animationFadeOut);
+                    fabDeleteText.setAnimation(animationFadeOut);
+                    fabAddText.setVisibility(View.INVISIBLE);
+                    fabDeleteText.setVisibility(View.INVISIBLE);
+                    fabViewText.setVisibility(View.INVISIBLE);
+                } else {
+                    isFabViewed = true;
+                    fabAddText.setVisibility(View.INVISIBLE);
+                    fabDeleteText.setVisibility(View.INVISIBLE);
+                    fabViewText.setVisibility(View.INVISIBLE);
+                }
             }
 
             @Override
@@ -227,6 +248,7 @@ public class CatalogActivity extends AppCompatActivity implements View.OnClickLi
             @Override
             public void onAnimationEnd(Animator animation) {
                 if(!isFabMenuOpen) {
+                    fadingLayoutForFabs.setVisibility(View.GONE);
                     fabAddLayout.setVisibility(View.GONE);
                     fabDeleteLayout.setVisibility(View.GONE);
                     fabViewLayout.setVisibility(View.GONE);
@@ -248,15 +270,14 @@ public class CatalogActivity extends AppCompatActivity implements View.OnClickLi
 
     }
 
-
-
-    //Menu specific settings
+    //Menu creation
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.menu_catalog, menu);
         return true;
     }
 
+    //Menu option selection
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
@@ -267,7 +288,7 @@ public class CatalogActivity extends AppCompatActivity implements View.OnClickLi
             // Respond to a click on the "Delete all entries" menu option
             case R.id.action_delete_all_entries:
                 // Do nothing for now
-                deleteAllInventory();
+                showDeleteAllConfirmationDialog();
                 return true;
         }
         return super.onOptionsItemSelected(item);
@@ -279,6 +300,7 @@ public class CatalogActivity extends AppCompatActivity implements View.OnClickLi
         displayDatabaseDetails();
     }
 
+    //Load dummy data
     private void insertDummyGame() {
         String[] gameNames = {"Call of Duty: Black Ops 4", "Super Mario Galaxy", "Spider-Man",
                 "Monster Hunter Worlds", "Final Fantasy XIV", "Guitar Hero"};
@@ -286,8 +308,13 @@ public class CatalogActivity extends AppCompatActivity implements View.OnClickLi
         int[] gameSystems = {InventoryContract.InventoryEntry.SYSTEM_N3DS, InventoryContract.InventoryEntry.SYSTEM_NSWITCH,
                 InventoryContract.InventoryEntry.SYSTEM_PS4, InventoryContract.InventoryEntry.SYSTEM_XBOXONE,
                 InventoryContract.InventoryEntry.SYSTEM_PS4, InventoryContract.InventoryEntry.SYSTEM_PS3};
-        Random r2 = new Random();
-        int selection2 = r2.nextInt(5 + 1) + 1;
+        Random r2 = new Random(); Random r3 = new Random(); Random r4 = new Random();
+        Random r5 = new Random(); Random r6 = new Random();
+        int selection2 = r2.nextInt(5 - 1) + 1;
+        int selection3 = r3.nextInt(5 - 1) + 1;
+        int selection4 = r4.nextInt(5 - 1) + 1;
+        int selection5 = r5.nextInt(5 - 1) + 1;
+        int selection6 = r6.nextInt(5 - 1) + 1;
         String gameCondition = "";
         switch (selection2) {
             case 0:
@@ -301,11 +328,11 @@ public class CatalogActivity extends AppCompatActivity implements View.OnClickLi
                 gameCondition = String.valueOf(R.string.condition_poor); break;
         }
         ContentValues values = new ContentValues();
-        values.put(InventoryContract.InventoryEntry.GAME_NAME, gameNames[dummyData]);
-        values.put(InventoryContract.InventoryEntry.GAME_SALE_PRICE, gamePrices[dummyData]);
-        values.put(InventoryContract.InventoryEntry.GAME_SYSTEM, gameSystems[dummyData]);
-        values.put(InventoryContract.InventoryEntry.GAME_QUANTITY, selection2);
-        values.put(InventoryContract.InventoryEntry.GAME_SUGGESTED_PRICE,gamePrices[dummyData]);
+        values.put(InventoryContract.InventoryEntry.GAME_NAME, gameNames[selection2]);
+        values.put(InventoryContract.InventoryEntry.GAME_SALE_PRICE, gamePrices[selection3]);
+        values.put(InventoryContract.InventoryEntry.GAME_SYSTEM, gameSystems[selection5]);
+        values.put(InventoryContract.InventoryEntry.GAME_QUANTITY, selection4);
+        values.put(InventoryContract.InventoryEntry.GAME_SUGGESTED_PRICE,gamePrices[selection6]);
         values.put(InventoryContract.InventoryEntry.GAME_CONDITION, gameCondition);
 
         Uri blankUri = getContentResolver().insert(InventoryContract.InventoryEntry.CONTENT_URI, values);
@@ -318,9 +345,9 @@ public class CatalogActivity extends AppCompatActivity implements View.OnClickLi
         }
     }
 
+    //Confirm deleting all database items
     private void showDeleteAllConfirmationDialog() {
         //Show an AlertDialog.Builder to set message and clickListeners
-
         final AlertDialog.Builder dialogBuilder = new AlertDialog.Builder(this);
         dialogBuilder.setMessage("Are you sure you want to delete all game inventory?");
         dialogBuilder.setPositiveButton(R.string.delete_them, new DialogInterface.OnClickListener() {
@@ -342,11 +369,6 @@ public class CatalogActivity extends AppCompatActivity implements View.OnClickLi
     }
 
 
-    /**
-     * Called when a view has been clicked.
-     *
-     * @param v The view that was clicked.
-     */
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
@@ -364,7 +386,7 @@ public class CatalogActivity extends AppCompatActivity implements View.OnClickLi
                 break;
             case R.id.delete_all:
                 if(isFabMenuOpen) { closeFABMenu(); }
-                deleteAllInventory();
+                showDeleteAllConfirmationDialog();
                 break;
             case R.id.stats_fab:
                 if(isFabMenuOpen) { closeFABMenu(); }

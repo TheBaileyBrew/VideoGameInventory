@@ -8,7 +8,7 @@
     <android.support.v7.widget.RecyclerView
         android:id="@+id/recyclerView"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"/>
+        android:layout_height="wrap_content"/>
     <RelativeLayout
         android:id="@+id/no_data_to_display_view"
         android:layout_width="match_parent"
@@ -18,8 +18,13 @@
             android:layout_width="155dp"
             android:layout_height="155dp"
             android:layout_centerInParent="true"/>
-
     </RelativeLayout>
+    <RelativeLayout
+        android:id="@+id/fade_layout"
+        android:visibility="invisible"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="#a8000000"/>
 
     <LinearLayout
         android:id="@+id/stats_layout"
@@ -28,13 +33,14 @@
         android:visibility="gone"
         android:gravity="center_vertical"
         android:layout_gravity="bottom|end"
-        android:layout_margin="52dp">
+        android:layout_margin="44dp">
         <TextView
             android:id="@+id/inventory_stats_text"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginRight="6dp"
             android:textSize="@dimen/small_text_20sp"
+            android:textColor="@android:color/white"
             android:text="INVENTORY STATS"/>
         <android.support.design.widget.FloatingActionButton
             android:id="@+id/stats_fab"
@@ -52,14 +58,15 @@
         android:visibility="gone"
         android:gravity="center_vertical"
         android:layout_gravity="bottom|end"
-        android:layout_margin="52dp">
+        android:layout_margin="44dp">
         <TextView
             android:id="@+id/inventory_add_text"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginRight="6dp"
             android:textSize="@dimen/small_text_20sp"
-            android:text="ADD NEW INVENTORY"/>
+            android:textColor="@android:color/white"
+            android:text="ADD NEW GAME"/>
         <android.support.design.widget.FloatingActionButton
             android:id="@+id/inventory_add"
             android:elevation="6dp"
@@ -74,14 +81,15 @@
         android:visibility="gone"
         android:gravity="center_vertical"
         android:layout_gravity="bottom|end"
-        android:layout_margin="52dp">
+        android:layout_margin="44dp">
         <TextView
             android:id="@+id/delete_all_text"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginRight="6dp"
             android:textSize="@dimen/small_text_20sp"
-            android:text="DELETE INVENTORY"/>
+            android:textColor="@android:color/white"
+            android:text="DELETE ALL GAMES"/>
         <android.support.design.widget.FloatingActionButton
             android:id="@+id/delete_all"
             android:elevation="6dp"

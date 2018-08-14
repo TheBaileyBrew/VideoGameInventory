@@ -36,33 +36,33 @@ import java.util.Locale;
 public class AddActivity extends AppCompatActivity implements View.OnClickListener {
     private static final String TAG = AddActivity.class.getSimpleName();
 
-    NumberFormat format = NumberFormat.getCurrencyInstance(Locale.US);
+    private final NumberFormat format = NumberFormat.getCurrencyInstance(Locale.US);
 
-    public TextInputEditText mGameNameEditText;
+    private TextInputEditText mGameNameEditText;
     public TextInputLayout mGameNameLayout;
 
-    public TextInputEditText mGamePriceEditText;
-    public TextInputLayout mGamePriceLayout;
-    public String mSuggestedPrice;
-    public String pricingPattern = "\\$\\d{2}\\.\\d{2}";
+    private TextInputEditText mGamePriceEditText;
+    private TextInputLayout mGamePriceLayout;
+    private String mSuggestedPrice;
+    private final String pricingPattern = "\\$\\d{2}\\.\\d{2}";
     public String finalDollarFormat = "$\\d{2}\\.\\d{2}";
 
-    public Spinner mSystemSpinner;
+    private Spinner mSystemSpinner;
     private int mSystem = InventoryContract.InventoryEntry.SYSTEM_UNKNOWN;
 
-    public EditText mQuantityEditText;
-    public Button mQuantityIncrease;
-    public Button mQuantityDecrease;
+    private EditText mQuantityEditText;
+    private Button mQuantityIncrease;
+    private Button mQuantityDecrease;
 
-    public RadioGroup mConditionRadioGroup;
-    public RadioButton mConditionPoor;
-    public RadioButton mConditionGood;
-    public RadioButton mConditionGreat;
-    public String mConditionSelected;
+    private RadioGroup mConditionRadioGroup;
+    private RadioButton mConditionPoor;
+    private RadioButton mConditionGood;
+    private RadioButton mConditionGreat;
+    private String mConditionSelected;
 
-    Boolean allValidData = false;
-    Boolean validGameName = false; Boolean validGamePrice = false;
-    Boolean validGameQuantity = false; Boolean validGameCondition = false;
+    private Boolean allValidData = false;
+    private Boolean validGameName = false; private Boolean validGamePrice = false;
+    private Boolean validGameQuantity = false; private Boolean validGameCondition = false;
 
 
     @Override

@@ -18,9 +18,9 @@ import org.w3c.dom.Text;
 
 public class InventoryCursorAdapter extends RecyclerView.Adapter<InventoryCursorAdapter.ViewHolder> {
 
-    CursorAdapter mCursor;
-    Context mContext;
-    onClickInterface clickListenerInterface;
+    final CursorAdapter mCursor;
+    final Context mContext;
+    final onClickInterface clickListenerInterface;
 
     public InventoryCursorAdapter(Context context, Cursor cursor, onClickInterface clickListenerInterface) {
         this.mContext = context;
@@ -75,12 +75,10 @@ public class InventoryCursorAdapter extends RecyclerView.Adapter<InventoryCursor
 
 
     public static class ViewHolder extends RecyclerView.ViewHolder {
-        public ConstraintLayout viewForeground;
-        public RelativeLayout viewBackground;
+        public final ConstraintLayout viewForeground;
 
         public ViewHolder(View itemView) {
             super(itemView);
-            viewBackground = itemView.findViewById(R.id.view_background);
             viewForeground = itemView.findViewById(R.id.view_foreground);
         }
     }
@@ -116,5 +114,7 @@ public class InventoryCursorAdapter extends RecyclerView.Adapter<InventoryCursor
         });
         return vh;
     }
+
+
 
 }

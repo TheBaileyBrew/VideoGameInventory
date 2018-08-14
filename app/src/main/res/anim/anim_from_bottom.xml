@@ -3,15 +3,25 @@
     android:duration="@integer/anim_duration">
 
     <translate
-        android:interpolator="@android:anim/accelerate_decelerate_interpolator"
-        android:fromYDelta="50%p"
+        android:fromYDelta="-40%"
         android:toYDelta="0"
+        android:interpolator="@android:anim/decelerate_interpolator"
         />
 
     <alpha
         android:fromAlpha="0"
         android:toAlpha="1"
-        android:interpolator="@android:anim/accelerate_decelerate_interpolator"
+        android:interpolator="@android:anim/decelerate_interpolator"
+        />
+
+    <scale
+        android:fromXScale="115%"
+        android:fromYScale="115%"
+        android:toXScale="100%"
+        android:toYScale="100%"
+        android:pivotX="35%"
+        android:pivotY="35%"
+        android:interpolator="@android:anim/decelerate_interpolator"
         />
 
 </set>
