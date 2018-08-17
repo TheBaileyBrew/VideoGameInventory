@@ -2,6 +2,7 @@ package com.thebaileybrew.videogameinventory.database;
 
 import android.content.Context;
 import android.database.Cursor;
+import android.provider.BaseColumns;
 import android.support.constraint.ConstraintLayout;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -13,8 +14,6 @@ import android.widget.TextView;
 
 import com.thebaileybrew.videogameinventory.R;
 import com.thebaileybrew.videogameinventory.onclickprotocols.onClickInterface;
-
-import org.w3c.dom.Text;
 
 public class InventoryCursorAdapter extends RecyclerView.Adapter<InventoryCursorAdapter.ViewHolder> {
 
@@ -88,6 +87,19 @@ public class InventoryCursorAdapter extends RecyclerView.Adapter<InventoryCursor
         return mCursor.getCount();
     }
 
+    @Override
+    public long getItemId(int position) {
+        if (mCursor != null) {
+            if (mCursor.getCursor().moveToPosition(position)) {
+                return mCursor.getCursor().getColumnIndex(BaseColumns._ID);
+            } else {
+                return 0;
+            }
+        } else {
+            return 0;
+        }
+    }
+
 
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
@@ -109,6 +121,7 @@ public class InventoryCursorAdapter extends RecyclerView.Adapter<InventoryCursor
             @Override
             public boolean onLongClick(View v) {
                 clickListenerInterface.onLongClick(v, vh.getAdapterPosition());
+
                 return true;
             }
         });

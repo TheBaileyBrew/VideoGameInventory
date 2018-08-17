@@ -1,6 +1,8 @@
 package com.thebaileybrew.videogameinventory;
 
+import android.content.Context;
 import android.content.Intent;
+import android.database.Cursor;
 import android.os.Handler;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -10,6 +12,13 @@ import android.view.animation.AnimationUtils;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+import android.widget.Toast;
+
+import com.thebaileybrew.videogameinventory.database.InventoryContract;
+import com.thebaileybrew.videogameinventory.gamingdatabasequery.QueryGameUtils;
+import com.thebaileybrew.videogameinventory.gamingdatabasequery.game;
+
+import java.util.List;
 
 import static android.view.View.VISIBLE;
 
@@ -23,6 +32,7 @@ public class HomeLoadingActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home_loading);
+
         welcomeMessage = findViewById(R.id.loading_progress_text);
         hintOne = findViewById(R.id.hint_one);
         hintTwo = findViewById(R.id.hint_two);
@@ -32,13 +42,28 @@ public class HomeLoadingActivity extends AppCompatActivity {
         in2 = AnimationUtils.loadAnimation(this,R.anim.fadein);
         in3 = AnimationUtils.loadAnimation(this,R.anim.fadein);
         in4 = AnimationUtils.loadAnimation(this,R.anim.fadein);
-
-
+        Cursor mCursor = getContentResolver().query(InventoryContract.GameEntry.CONTENT_URI,
+                null, null,null,null,null);
+        Boolean rowExists = false;
+        if (mCursor != null) {
+            if (mCursor.moveToFirst()) {
+                mCursor.close();
+                rowExists = true;
+                Toast.makeText(this, "Table exists already", Toast.LENGTH_SHORT).show();
+            } else {
+                mCursor.close();
+                rowExists = false;
+            }
+        }
+        if (!rowExists) {
+            String jsonData = QueryGameUtils.loadJSONFromAsset(this);
+            QueryGameUtils.extractDataFromJson(jsonData, this);
+        }
         startLoader();
 
-
-        //TODO: Set up Intent to load Catalog Activity
     }
+
+
 
     private void startLoader() {
         final Handler mHandler = new Handler(); final Handler mHandler2 = new Handler();
@@ -83,6 +108,7 @@ public class HomeLoadingActivity extends AppCompatActivity {
             public void run() {
                 welcomeMessage.setText("DATABASE LOADED");
                 openGamingDatabase();
+
             }
         };
         mHandlerLoad.postDelayed(delayRunnableLoader, 12000);

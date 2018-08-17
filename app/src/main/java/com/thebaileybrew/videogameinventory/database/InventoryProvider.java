@@ -4,13 +4,13 @@ import android.content.ContentProvider;
 import android.content.ContentUris;
 import android.content.ContentValues;
 import android.content.UriMatcher;
-import android.database.ContentObserver;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.net.Uri;
-import android.os.Build;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+
+import java.util.Set;
 
 public class InventoryProvider extends ContentProvider {
     public static final String TAG = InventoryProvider.class.getSimpleName();
@@ -29,14 +29,12 @@ public class InventoryProvider extends ContentProvider {
         return true;
     }
 
+    ;
     public static UriMatcher buildUriMatcher() {
         String content = InventoryContract.CONTENT_AUTHORITY;
-
         UriMatcher sUriMatcher = new UriMatcher(UriMatcher.NO_MATCH);
         sUriMatcher.addURI(content, InventoryContract.PATH_INVENTORY, INVENTORY);
         sUriMatcher.addURI(content, InventoryContract.PATH_INVENTORY + "/#", INVENTORY_ID);
-        sUriMatcher.addURI(content, InventoryContract.PATH_GAMES, GAME);
-        sUriMatcher.addURI(content, InventoryContract.PATH_GAMES + "/*", GAME_NAME);
         sUriMatcher.addURI(content, InventoryContract.PATH_GAMES, GAME);
         sUriMatcher.addURI(content, InventoryContract.PATH_GAMES + "/#", GAME_ID);
         return sUriMatcher;
@@ -80,6 +78,12 @@ public class InventoryProvider extends ContentProvider {
             default:
                 throw new IllegalArgumentException("Cannot query unknown URI " + uri);
         }
+        /*
+        * Set notifications on the Cursor to notifiy if Uri has changed
+        * If the data at the called ContentUri changes, then the cursor needs to be updated
+        */
+        cursor.setNotificationUri(getContext().getContentResolver(), uri);
+
         return cursor;
     }
 
@@ -114,15 +118,15 @@ public class InventoryProvider extends ContentProvider {
             case GAME:
                 _id = db.insert(InventoryContract.GameEntry.TABLE_NAME, null, values);
                 if (_id > 0) {
-                    returnUri = InventoryContract.GameEntry.buildGameUri(_id);
+                    returnUri = ContentUris.withAppendedId(uri,_id);
                 } else {
                     throw new UnsupportedOperationException("Unable to insert row into: " + uri);
                 }
                 break;
             case INVENTORY:
                 _id = db.insert(InventoryContract.InventoryEntry.TABLE_NAME, null, values);
-                if (_id > 0) {
-                    returnUri = InventoryContract.InventoryEntry.buildInventoryUri(_id);
+                if (_id >= 0) {
+                    returnUri = ContentUris.withAppendedId(uri,_id);
                 } else {
                     throw new UnsupportedOperationException("Unable to insert row into: " + uri);
                 }
@@ -143,7 +147,7 @@ public class InventoryProvider extends ContentProvider {
             case INVENTORY:
                 return database.delete(InventoryContract.InventoryEntry.TABLE_NAME, selection, selectionArgs);
             case INVENTORY_ID:
-                selection = InventoryContract.InventoryEntry._ID + "=?";
+                selection = InventoryContract.InventoryEntry._ID + "=? " ;
                 selectionArgs = new String[] {String.valueOf(ContentUris.parseId(uri))};
                 return database.delete(InventoryContract.InventoryEntry.TABLE_NAME, selection, selectionArgs);
             default:
@@ -165,6 +169,7 @@ public class InventoryProvider extends ContentProvider {
             default:
                 throw new IllegalArgumentException("Update is not support for " + uri);
         }
+
     }
 
     private int updateInventory(Uri uri, ContentValues values, String selection, String[] selectionArgs) {

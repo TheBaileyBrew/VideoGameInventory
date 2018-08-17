@@ -11,7 +11,7 @@ public class InventoryDbHelper extends SQLiteOpenHelper {
     public static final String TAG = InventoryDbHelper.class.getSimpleName();
 
     //Name of Database
-    private static final String DATABASE_NAME = "gamingdatabase.db";
+    private static final String DATABASE_NAME = "allinventory.db";
 
     //Database version. If schema is changed, the version must be incremented
     private static final int DATABASE_VERSION = 1;
@@ -36,7 +36,8 @@ public class InventoryDbHelper extends SQLiteOpenHelper {
                 + InventoryEntry.GAME_QUANTITY + " INTEGER NOT NULL DEFAULT 0, "
                 + InventoryEntry.GAME_SALE_PRICE + " REAL, "
                 + InventoryEntry.GAME_SUGGESTED_PRICE + " REAL, "
-                + InventoryEntry.GAME_CONDITION + " TEXT);";
+                + InventoryEntry.GAME_CONDITION + " TEXT, "
+                + InventoryEntry.GAME_UPC_CODE + " TEXT);";
         db.execSQL(SQL_CREATE_INVENTORY_TABLE);
     }
     private void addGamesTable(SQLiteDatabase db) {
