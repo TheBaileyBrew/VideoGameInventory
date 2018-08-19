@@ -13,15 +13,16 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.thebaileybrew.videogameinventory.R;
+import com.thebaileybrew.videogameinventory.interfacefiles.CustomOnClickInterface;
 import com.thebaileybrew.videogameinventory.onclickprotocols.onClickInterface;
 
 public class InventoryCursorAdapter extends RecyclerView.Adapter<InventoryCursorAdapter.ViewHolder> {
 
     final CursorAdapter mCursor;
     final Context mContext;
-    final onClickInterface clickListenerInterface;
+    final CustomOnClickInterface clickListenerInterface;
 
-    public InventoryCursorAdapter(Context context, Cursor cursor, onClickInterface clickListenerInterface) {
+    public InventoryCursorAdapter(Context context, Cursor cursor, CustomOnClickInterface clickListenerInterface) {
         this.mContext = context;
         this.clickListenerInterface = clickListenerInterface;
         this.mCursor = new CursorAdapter(mContext, cursor, 0) {
@@ -33,6 +34,8 @@ public class InventoryCursorAdapter extends RecyclerView.Adapter<InventoryCursor
             @Override
             public void bindView(View view, Context context, Cursor cursor) {
                 RelativeLayout itemRecyclerView = view.findViewById(R.id.view_object_contraint);
+
+
                 TextView systemDetail = view.findViewById(R.id.system_detail);
                 TextView itemDetail = view.findViewById(R.id.item_name_view);
                 TextView quantityDetail = view.findViewById(R.id.item_qty_view);
@@ -68,6 +71,8 @@ public class InventoryCursorAdapter extends RecyclerView.Adapter<InventoryCursor
                 String priceValue = cursor.getString((cursor.getColumnIndexOrThrow("saleprice")));
                 priceDetail.setText(priceValue);
 
+
+
             }
         };
     }
@@ -79,6 +84,7 @@ public class InventoryCursorAdapter extends RecyclerView.Adapter<InventoryCursor
         public ViewHolder(View itemView) {
             super(itemView);
             viewForeground = itemView.findViewById(R.id.view_foreground);
+            viewForeground.setTag(BaseColumns._ID);
         }
     }
 
@@ -91,7 +97,7 @@ public class InventoryCursorAdapter extends RecyclerView.Adapter<InventoryCursor
     public long getItemId(int position) {
         if (mCursor != null) {
             if (mCursor.getCursor().moveToPosition(position)) {
-                return mCursor.getCursor().getColumnIndex(BaseColumns._ID);
+                return mCursor.getCursor().getColumnIndexOrThrow(InventoryContract.InventoryEntry._ID);
             } else {
                 return 0;
             }
@@ -102,7 +108,7 @@ public class InventoryCursorAdapter extends RecyclerView.Adapter<InventoryCursor
 
 
     @Override
-    public void onBindViewHolder(ViewHolder holder, int position) {
+    public void onBindViewHolder(final ViewHolder holder, int position) {
         mCursor.getCursor().moveToPosition(position);
         mCursor.bindView(holder.itemView, mContext, mCursor.getCursor());
     }
@@ -111,6 +117,7 @@ public class InventoryCursorAdapter extends RecyclerView.Adapter<InventoryCursor
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View v = mCursor.newView(mContext, mCursor.getCursor(), parent);
         final ViewHolder vh = new ViewHolder(v);
+
         v.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -120,11 +127,11 @@ public class InventoryCursorAdapter extends RecyclerView.Adapter<InventoryCursor
         v.setOnLongClickListener(new View.OnLongClickListener() {
             @Override
             public boolean onLongClick(View v) {
-                clickListenerInterface.onLongClick(v, vh.getAdapterPosition());
-
+                clickListenerInterface.onLongClick(v, String.valueOf(vh.getAdapterPosition()));
                 return true;
             }
         });
+
         return vh;
     }
 

@@ -33,6 +33,7 @@ import android.widget.Toast;
 import com.thebaileybrew.videogameinventory.customobjectsclasses.RecyclerItemTouchHelpListener;
 import com.thebaileybrew.videogameinventory.database.InventoryContract;
 import com.thebaileybrew.videogameinventory.database.InventoryCursorAdapter;
+import com.thebaileybrew.videogameinventory.interfacefiles.CustomOnClickInterface;
 import com.thebaileybrew.videogameinventory.interfacefiles.RecyclerItemTouchListener;
 import com.thebaileybrew.videogameinventory.onclickprotocols.onClickInterface;
 
@@ -74,7 +75,7 @@ public class CatalogActivity extends AppCompatActivity implements View.OnClickLi
     }
 
     private void displayDatabaseDetails() {
-        String[] projection = {
+        final String[] projection = {
                 InventoryContract.InventoryEntry._ID,
                 InventoryContract.InventoryEntry.GAME_NAME,
                 InventoryContract.InventoryEntry.GAME_SYSTEM,
@@ -87,7 +88,7 @@ public class CatalogActivity extends AppCompatActivity implements View.OnClickLi
                 null,null,null,null);
         recyclerView = findViewById(R.id.recyclerView);
 
-        inventoryCursorAdapter = new InventoryCursorAdapter(this, cursor, new onClickInterface() {
+        inventoryCursorAdapter = new InventoryCursorAdapter(this, cursor, new CustomOnClickInterface() {
 
             //Defines what happens on item tap
             @Override
@@ -97,7 +98,8 @@ public class CatalogActivity extends AppCompatActivity implements View.OnClickLi
 
             //Defines what happens on long click
             @Override
-            public void onLongClick(View v, int position) {
+            public void onLongClick(View v, String position) {
+                Toast.makeText(CatalogActivity.this, "Current Row: " + position, Toast.LENGTH_SHORT).show();
                 showOnLongClickDialog(position);
             }
         });
@@ -372,9 +374,10 @@ public class CatalogActivity extends AppCompatActivity implements View.OnClickLi
     }
 
     //Prompt for what to do with a specific list item
-    private void showOnLongClickDialog(int value) {
-        long rowId = inventoryCursorAdapter.getItemId(value);
-        final Uri currentGame = ContentUris.withAppendedId(InventoryContract.InventoryEntry.CONTENT_URI, rowId);
+    private void showOnLongClickDialog(String rowId) {
+        int value = Integer.parseInt(rowId);
+
+        final Uri currentGame = ContentUris.withAppendedId(InventoryContract.InventoryEntry.CONTENT_URI, value);
 
         final AlertDialog.Builder longClickBuilder = new AlertDialog.Builder(this);
         longClickBuilder.setMessage("What would you like to do with this item?");
