@@ -98,8 +98,9 @@ public class CatalogActivity extends AppCompatActivity implements View.OnClickLi
 
             //Defines what happens on long click
             @Override
-            public void onLongClick(View v, String position) {
+            public void onLongClick(View v, int position) {
                 Toast.makeText(CatalogActivity.this, "Current Row: " + position, Toast.LENGTH_SHORT).show();
+
                 showOnLongClickDialog(position);
             }
         });
@@ -374,10 +375,9 @@ public class CatalogActivity extends AppCompatActivity implements View.OnClickLi
     }
 
     //Prompt for what to do with a specific list item
-    private void showOnLongClickDialog(String rowId) {
-        int value = Integer.parseInt(rowId);
+    private void showOnLongClickDialog(int rowId) {
 
-        final Uri currentGame = ContentUris.withAppendedId(InventoryContract.InventoryEntry.CONTENT_URI, value);
+        final Uri currentGame = ContentUris.withAppendedId(InventoryContract.InventoryEntry.CONTENT_URI, rowId);
 
         final AlertDialog.Builder longClickBuilder = new AlertDialog.Builder(this);
         longClickBuilder.setMessage("What would you like to do with this item?");

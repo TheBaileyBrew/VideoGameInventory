@@ -34,7 +34,8 @@ public class InventoryCursorAdapter extends RecyclerView.Adapter<InventoryCursor
             @Override
             public void bindView(View view, Context context, Cursor cursor) {
                 RelativeLayout itemRecyclerView = view.findViewById(R.id.view_object_contraint);
-
+                int rowTag = cursor.getInt(cursor.getColumnIndexOrThrow(BaseColumns._ID));
+                itemRecyclerView.setTag(rowTag);
 
                 TextView systemDetail = view.findViewById(R.id.system_detail);
                 TextView itemDetail = view.findViewById(R.id.item_name_view);
@@ -127,7 +128,7 @@ public class InventoryCursorAdapter extends RecyclerView.Adapter<InventoryCursor
         v.setOnLongClickListener(new View.OnLongClickListener() {
             @Override
             public boolean onLongClick(View v) {
-                clickListenerInterface.onLongClick(v, String.valueOf(vh.getAdapterPosition()));
+                clickListenerInterface.onLongClick(v, vh.getAdapterPosition());
                 return true;
             }
         });
